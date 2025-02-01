@@ -1,7 +1,7 @@
 const std = @import("std");
 const win32 = @import("zigwin32");
 const interface = @import("get_interface.zig");
-const trampoline = @import("trampoline.zig");
+const hooking = @import("vmthook");
 const structs = @import("structs.zig");
 const hooks = @import("hooks.zig");
 const globals = @import("globals.zig");
@@ -25,7 +25,7 @@ pub export fn DllMain(hInst: win.HINSTANCE, dwReason: win.DWORD, _: win.LPVOID) 
 fn unload(hInst: ?*anyopaque) u32 {
     // unload by pressing enter in console (no idea why this is called readByte)
     _ = std.io.getStdIn().reader().readByte() catch unreachable;
-    trampoline.global_hooks_states.deinit();
+    hooking.deinit();
     _ = win32.system.console.FreeConsole();
     win32.system.library_loader.FreeLibraryAndExitThread(@as(?win.HINSTANCE, @ptrCast(hInst)), 0);
 
@@ -57,8 +57,8 @@ fn main_thread(hInst: ?*anyopaque) callconv(.winapi) u32 {
     globals.get_local_player = @ptrFromInt(@as(usize, @intCast(@as(isize, @intCast(create_move + 22)) + @as(*align(1) i32, @ptrFromInt(create_move + 18)).*))); //@ptrFromInt(@as(usize, @intCast(@as(isize, @intCast(create_move + 22)) + @as(isize, @ptrFromInt(create_move + 18)))));
     std.log.debug("get_local_player: {*}", .{globals.get_local_player});
 
-    trampoline.global_hooks_states.init(allocator);
-    hooks.create_move_o = @ptrFromInt(trampoline.virtual_hook(g_pClientMode, 21, @intFromPtr(&hooks.hk_create_move)));
+    hooking.init(allocator);
+    hooks.create_move_o = @ptrCast(hooking.virtual_hook(g_pClientMode, 21, &hooks.hk_create_move));
 
     return unload(hInst);
 }
