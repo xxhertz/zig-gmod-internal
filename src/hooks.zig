@@ -9,8 +9,9 @@ pub fn hk_create_move(this: *anyopaque, frametime: f32, cmd: *c_usercmd) bool {
     // probably should check if it exists (they do it internally @create_move_o) but i don't think it's necessary in this engine
     const local_player = globals.get_local_player().?;
 
-    // extremely easy to detect, no fakescrolls and no ladder checks, movetype impl later
-    cmd.buttons.IN_JUMP = cmd.buttons.IN_JUMP and local_player.m_iFlags.FL_ONGROUND;
+    if (cmd.buttons.IN_JUMP and local_player.m_MoveType == .MOVETYPE_WALK and local_player.m_iWaterLevel != .FULLY_SUBMERGED and local_player.m_iWaterLevel != .MOSTLY_SUBMERGED) {
+        cmd.buttons.IN_JUMP = local_player.m_iFlags.FL_ONGROUND;
+    }
 
     return create_move_o(this, frametime, cmd);
 }

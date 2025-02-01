@@ -4,7 +4,6 @@ pub const hook_state = struct {
     index: u32,
 };
 
-
 pub const c_usercmd = struct {
     command_number: c_int,
     tick_count: c_int,
@@ -87,8 +86,7 @@ pub const flags = packed struct(u32) {
     FL_UNBLOCKABLE_BY_PLAYER: bool = false,
 };
 
-// unimplemented but should be accurate, from gmod docs
-const movetype = enum(c_uint) {
+const movetype = enum(c_char) {
     MOVETYPE_NONE,
     MOVETYPE_ISOMETRIC,
     MOVETYPE_WALK,
@@ -103,8 +101,19 @@ const movetype = enum(c_uint) {
     MOVETYPE_CUSTOM1,
 };
 
+const waterlevel = enum(c_char) {
+    NOT_SUBMERGED,
+    PARTIALLY_SUBMERGED,
+    MOSTLY_SUBMERGED,
+    FULLY_SUBMERGED,
+};
+
 pub const player = extern struct {
-    _1: [0x440]u8,
+    _1: [0x1F4]u8,
+    m_MoveType: movetype, // 0x1F4
+    _2: [0x3]u8,
+    m_iWaterLevel: waterlevel, // 0x1F8
+    _3: [0x247]u8,
     m_iFlags: flags,
 };
 
