@@ -1,3 +1,7 @@
+const math = @import("zlm").SpecializeOn(f32);
+
+pub const direction = enum { NONE, FORWARD, BACK, LEFT, RIGHT };
+
 pub const hook_state = struct {
     original_ptr: usize,
     vtable: [*]align(1) usize,
@@ -7,7 +11,7 @@ pub const hook_state = struct {
 pub const c_usercmd = struct {
     command_number: c_int,
     tick_count: c_int,
-    viewangles: vec3,
+    viewangles: math.Vec3,
     forwardmove: f32,
     sidemove: f32,
     upmove: f32,
@@ -108,17 +112,14 @@ const waterlevel = enum(c_char) {
     FULLY_SUBMERGED,
 };
 
+// if we don't mark this as extern then zig optimizes the struct
 pub const player = extern struct {
-    _1: [0x1F4]u8,
+    _1: [0x148]u8,
+    m_vecVelocity: math.Vec3, // 0x148
+    _2: [0xA0]u8,
     m_MoveType: movetype, // 0x1F4
-    _2: [0x3]u8,
+    _3: [0x3]u8,
     m_iWaterLevel: waterlevel, // 0x1F8
-    _3: [0x247]u8,
+    _4: [0x246]u8,
     m_iFlags: flags,
-};
-
-pub const vec3 = struct {
-    x: f32,
-    y: f32,
-    z: f32,
 };

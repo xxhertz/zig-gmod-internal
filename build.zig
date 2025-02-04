@@ -18,4 +18,7 @@ pub fn build(b: *std.Build) void {
 
     const vmthook_dep = b.dependency("vmthook", .{});
     lib.root_module.addImport("vmthook", vmthook_dep.module("hooking"));
+
+    const zlm_dep = b.dependency("zlm", .{});
+    lib.root_module.addImport("zlm", zlm_dep.module("zlm"));
 }

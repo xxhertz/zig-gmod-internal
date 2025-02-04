@@ -10,6 +10,10 @@
             .url = "git+https://github.com/xxhertz/zig-vmt-hook?ref=main#683e8165d482c8f27317df59238d91478887cecf",
             .hash = "122098ac95a8dd73f20860e63a834e2b0f5402c95149981ed8b0d066d696d5eecb8d",
         },
+        .zlm = .{
+            .url = "git+https://github.com/ziglibs/zlm#513c3cc49f527f9e1116a9bbbbf390f9208cd91a",
+            .hash = "12205da2e90d99d1490e349e55e4adf2dae5e442a6f1339c26a42c4ac96b256fb175",
+        },
     },
     .paths = .{
         "build.zig",
