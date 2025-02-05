@@ -3,7 +3,7 @@ const win32 = @import("zigwin32");
 const interface = @import("get_interface.zig");
 const hooking = @import("vmthook");
 const structs = @import("structs.zig");
-const hooks = @import("hooks.zig");
+const hooks = @import("hooks/createmove.zig");
 const globals = @import("globals.zig");
 const win = std.os.windows;
 
@@ -45,16 +45,16 @@ fn main_thread(hInst: ?*anyopaque) callconv(.winapi) u32 {
     std.log.debug("CHLClient: {*}", .{g_pClient});
 
     const hud_process_input = g_pClient[10];
-    std.log.debug("CHLClient->HudProcessInput: {X}", .{hud_process_input});
+    std.log.debug("CHLClient->HudProcessInput: {x}", .{hud_process_input});
 
     // ... lol
     const g_pClientMode: [*]align(1) usize = @as(*align(1) *align(1) [*]align(1) usize, @ptrFromInt(@as(usize, @intCast(@as(isize, @intCast(hud_process_input + 7)) + @as(*align(1) i32, @ptrFromInt(hud_process_input + 3)).*)))).*.*;
     std.log.debug("g_pClientMode: {*}", .{g_pClientMode});
 
     const create_move = g_pClientMode[21];
-    std.log.debug("g_pClientMode->CreateMove: {X}", .{create_move});
+    std.log.debug("g_pClientMode->CreateMove: {x}", .{create_move});
 
-    globals.get_local_player = @ptrFromInt(@as(usize, @intCast(@as(isize, @intCast(create_move + 22)) + @as(*align(1) i32, @ptrFromInt(create_move + 18)).*))); //@ptrFromInt(@as(usize, @intCast(@as(isize, @intCast(create_move + 22)) + @as(isize, @ptrFromInt(create_move + 18)))));
+    globals.get_local_player = @ptrFromInt(@as(usize, @intCast(@as(isize, @intCast(create_move + 22)) + @as(*align(1) i32, @ptrFromInt(create_move + 18)).*)));
     std.log.debug("get_local_player: {*}", .{globals.get_local_player});
 
     hooking.init(allocator);
