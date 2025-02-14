@@ -34,7 +34,7 @@ pub fn hk_create_move(this: *anyopaque, frametime: f32, cmd: *c_usercmd) bool {
                 autostrafe.rage_strafe(cmd);
             }
 
-            // crouchfix
+            // recrouch if you can't uncrouch
             if (state.last_networked_flags.FL_DUCKING and local_player.m_iFlags.FL_DUCKING and !cmd.buttons.IN_DUCK and local_player.m_iFlags.FL_ONGROUND) {
                 cmd.buttons.IN_DUCK = true;
             }
